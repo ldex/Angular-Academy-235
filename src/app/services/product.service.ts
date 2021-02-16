@@ -3,13 +3,14 @@ import { Product } from '../products/product.interface';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, delay, shareReplay, tap, map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private baseUrl = 'https://storerestservice.azurewebsites.net/api/products/';
+  private baseUrl = environment.apiUrl;
   products$: Observable<Product[]>;
 
   constructor(private http: HttpClient) {
