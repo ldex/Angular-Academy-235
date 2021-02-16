@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { EMPTY, Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from '../product.interface';
 
@@ -10,8 +12,10 @@ import { Product } from '../product.interface';
 export class ProductListComponent implements OnInit {
 
   title = 'Products';
-  products: Product[];
+ // products: Product[];
+  products$: Observable<Product[]>;
   selectedProduct: Product;
+  errorMessage: string;
 
   onSelect(product: Product) {
     this.selectedProduct = product;
@@ -21,12 +25,24 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this
-      .productService
-      .products$
-      .subscribe(
-        results => this.products = results
-      );
+    this.products$ = this
+                        .productService
+                        .products$
+                        .pipe(
+                          catchError(
+                            error => {
+                              this.errorMessage = error;
+                              return EMPTY;
+                            }
+                          )
+                        );
+
+    // this
+    //   .productService
+    //   .products$
+    //   .subscribe(
+    //     results => this.products = results
+    //   );
   }
 
 }
